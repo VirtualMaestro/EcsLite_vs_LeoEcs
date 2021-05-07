@@ -1,10 +1,10 @@
-﻿using Client.Source.Tests.Components;
-using Client.Source.Tests.Systems.Leo;
-using Client.Source.Tests.Systems.Lite;
+﻿using Client.Source.Components;
+using Client.Source.Systems.Leo;
+using Client.Source.Systems.Lite;
 using Leopotam.EcsLite;
 using UnityEngine;
 
-namespace Client.Source.Tests
+namespace Client.Source
 {
     public class Entry : MonoBehaviour
     {

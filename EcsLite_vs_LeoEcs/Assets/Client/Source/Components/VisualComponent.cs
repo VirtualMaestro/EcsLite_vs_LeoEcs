@@ -1,4 +1,4 @@
-﻿namespace Client.Source.Tests.Components
+﻿namespace Client.Source.Components
 {
     public struct VisualComponent
     {

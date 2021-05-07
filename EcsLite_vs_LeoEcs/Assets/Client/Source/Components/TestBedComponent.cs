@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
-using Client.Source.Tests.Monobehs;
+using Client.Source.Monobehs;
 
-namespace Client.Source.Tests.Components
+namespace Client.Source.Components
 {
     public struct TestBedComponent
     {

@@ -1,7 +1,7 @@
-﻿using Client.Source.Tests.Components;
+﻿using Client.Source.Components;
 using Leopotam.Ecs;
 
-namespace Client.Source.Tests.Systems.Leo
+namespace Client.Source.Systems.Leo
 {
     public class AddVisualLeoSystem : IEcsRunSystem
     {

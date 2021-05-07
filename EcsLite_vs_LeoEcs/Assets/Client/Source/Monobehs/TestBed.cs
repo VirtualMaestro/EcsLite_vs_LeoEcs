@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
-using Client.Source.Tests.Components;
+using Client.Source.Components;
 using Leopotam.EcsLite;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using EcsEntityExtensions = Leopotam.Ecs.EcsEntityExtensions;
 
-namespace Client.Source.Tests.Monobehs
+namespace Client.Source.Monobehs
 {
     public class TestBed : MonoBehaviour
     {

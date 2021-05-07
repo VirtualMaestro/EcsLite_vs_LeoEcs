@@ -1,6 +1,6 @@
 ﻿using Leopotam.EcsLite;
 
-namespace Client.Source.Tests.Extensions
+namespace Client.Source.Extensions
 {
     public static class FilterExtension
     {

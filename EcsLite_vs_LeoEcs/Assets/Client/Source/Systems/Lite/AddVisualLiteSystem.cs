@@ -1,7 +1,7 @@
-﻿using Client.Source.Tests.Components;
+﻿using Client.Source.Components;
 using Leopotam.EcsLite;
 
-namespace Client.Source.Tests.Systems.Lite
+namespace Client.Source.Systems.Lite
 {
     public class AddVisualLiteSystem : IEcsInitSystem, IEcsRunSystem
     {
