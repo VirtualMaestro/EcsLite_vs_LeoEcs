@@ -1,6 +1,5 @@
 ﻿using Client.Source.Tests.Components;
 using Leopotam.Ecs;
-using UnityEngine;
 
 namespace Client.Source.Tests.Systems.Leo
 {
@@ -22,7 +21,7 @@ namespace Client.Source.Tests.Systems.Leo
                 if (destroyEntityComponent.Frames > 0) continue;
 
                 if (entity.Has<VisualComponent>())
-                    Object.Destroy(entity.Get<VisualComponent>().View);
+                    entity.Del<VisualComponent>();
 
                 entity.Destroy();
             }

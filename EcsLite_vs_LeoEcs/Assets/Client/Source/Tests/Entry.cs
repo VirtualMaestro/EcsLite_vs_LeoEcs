@@ -32,6 +32,8 @@ namespace Client.Source.Tests
             _liteSystems = new EcsSystems(_liteWorld);
 
             _liteSystems.Add(new StartTestLiteSystem());
+            _liteSystems.Add(new AddVisualLiteSystem());
+            _liteSystems.Add(new RemoveVisualLiteSystem());
             _liteSystems.Add(new DestroyEntityLiteSystem());
             _liteSystems.Add(new FinishTestLiteSystem());
 
@@ -43,6 +45,8 @@ namespace Client.Source.Tests
             _leoWorld = new Leopotam.Ecs.EcsWorld();
             _leoSystems = new Leopotam.Ecs.EcsSystems(_leoWorld);
             _leoSystems.Add(new StartTestLeoSystem());
+            _leoSystems.Add(new AddVisualLeoSystem());
+            _leoSystems.Add(new RemoveVisualLeoSystem());
             _leoSystems.Add(new DestroyEntityLeoSystem());
             _leoSystems.Add(new FinishTestLeoSystem());
 

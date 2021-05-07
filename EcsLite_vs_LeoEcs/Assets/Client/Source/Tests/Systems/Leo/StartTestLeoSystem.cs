@@ -22,7 +22,12 @@ namespace Client.Source.Tests.Systems.Leo
             var delay = startEvent.DelayDestroy;
 
             for (var i = 0; i < numEntities; i++)
-                _world.NewEntity().Get<DestroyEntityComponent>().Frames = delay;
+            {
+                var entity = _world.NewEntity();
+                entity.Get<DestroyEntityComponent>().Frames = delay;
+                entity.Get<IsNewComponent>();
+            }
+                
 
             _world.NewEntity().Get<TestProgressEvent>();
 

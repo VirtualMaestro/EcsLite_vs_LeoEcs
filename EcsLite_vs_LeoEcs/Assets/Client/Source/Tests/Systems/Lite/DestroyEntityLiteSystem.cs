@@ -1,6 +1,5 @@
 ﻿using Client.Source.Tests.Components;
 using Leopotam.EcsLite;
-using UnityEngine;
 
 namespace Client.Source.Tests.Systems.Lite
 {
@@ -31,7 +30,7 @@ namespace Client.Source.Tests.Systems.Lite
                 if (destroyEntityComponent.Frames > 0) continue;
 
                 if (_viewPool.Has(entityId))
-                    Object.Destroy(_viewPool.Get(entityId).View);
+                    _viewPool.Del(entityId);
 
                 _world.DelEntity(entityId);
             }

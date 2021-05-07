@@ -148,7 +148,7 @@ namespace Client.Source.Tests.Monobehs
         private void _StartTesting(ref TestStartEvent startEvent)
         {
             startEvent.NumEntities = string.IsNullOrEmpty(_numEntitiesInput.text) ? 100000 : Math.Abs(int.Parse(_numEntitiesInput.text));
-            startEvent.DelayDestroy = string.IsNullOrEmpty(_delayDestroyInput.text) ? 0 : Math.Abs(int.Parse(_delayDestroyInput.text));
+            startEvent.DelayDestroy = string.IsNullOrEmpty(_delayDestroyInput.text) ? 10 : Math.Abs(int.Parse(_delayDestroyInput.text));
             
             EnableUi(false);
         }

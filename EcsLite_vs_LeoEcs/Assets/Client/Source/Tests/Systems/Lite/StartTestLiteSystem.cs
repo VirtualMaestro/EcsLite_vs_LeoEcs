@@ -13,6 +13,7 @@ namespace Client.Source.Tests.Systems.Lite
         private EcsPool<TestStartEvent> _testStartPool;
         private EcsPool<TestProgressEvent> _testProgressPool;
         private EcsPool<TestBedComponent> _testBedPool;
+        private EcsPool<IsNewComponent> _isNewPool;
         
         public void Init(EcsSystems systems)
         {
@@ -23,6 +24,7 @@ namespace Client.Source.Tests.Systems.Lite
             _testStartPool = _world.GetPool<TestStartEvent>();
             _testProgressPool = _world.GetPool<TestProgressEvent>();
             _testBedPool = _world.GetPool<TestBedComponent>();
+            _isNewPool = _world.GetPool<IsNewComponent>();
         }
 
         public void Run(EcsSystems systems)
@@ -36,9 +38,13 @@ namespace Client.Source.Tests.Systems.Lite
             ref var startEvent = ref _testStartPool.Get(_testStartEventFilter.First());
             var numEntities = startEvent.NumEntities;
             var delay = startEvent.DelayDestroy;
-            
+
             for (var i = 0; i < numEntities; i++)
-                _destroyEntityPool.Add(_world.NewEntity()).Frames = delay;
+            {
+                var entityId = _world.NewEntity();
+                _destroyEntityPool.Add(entityId).Frames = delay;
+                _isNewPool.Add(entityId);
+            }
 
             _testProgressPool.Add(_world.NewEntity());
             
