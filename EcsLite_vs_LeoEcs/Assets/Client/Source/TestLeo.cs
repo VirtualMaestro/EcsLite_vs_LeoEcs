@@ -7,42 +7,51 @@ namespace Client.Source
 {
     public class TestLeo : MonoBehaviour
     {
-        [SerializeField]
-        private int numCachedEntities;
-        
-        private EcsSystems _leoSystems;
-        private EcsWorld _leoWorld;
-        
-        public EcsWorld World => _leoWorld;
+        private EcsSystems _systems;
+        private EcsWorld _world;
+
+        public EcsWorld World => _world;
 
         private void Awake()
         {
             var config = new EcsWorldConfig
             {
-                WorldEntitiesCacheSize = numCachedEntities
+                WorldEntitiesCacheSize = 1_000_000
             };
 
-            _leoWorld = new EcsWorld(config);
-            _leoSystems = new EcsSystems(_leoWorld);
-            _leoSystems.Add(new StartTestLeoSystem());
-            _leoSystems.Add(new AddVisualLeoSystem());
-            _leoSystems.Add(new RemoveVisualLeoSystem());
-            _leoSystems.Add(new DestroyEntityLeoSystem());
-            _leoSystems.Add(new FinishTestLeoSystem());
+            _world = new EcsWorld(config);
+            _systems = new EcsSystems(_world);
+            _systems.Add(new StartTestLeoSystem());
+            _systems.Add(new AddVisualLeoSystem());
+            _systems.Add(new RemoveVisualLeoSystem());
+            _systems.Add(new DestroyEntityLeoSystem());
+            _systems.Add(new FinishTestLeoSystem());
 
-            _leoSystems.OneFrame<TestStartEvent>();
+            _systems.OneFrame<TestStartEvent>();
+        }
 
-            _leoSystems.ProcessInjects();
+        public void Inject(object obj)
+        {
+            _systems.Inject(obj);
         }
 
         private void Start()
         {
-            _leoSystems.Init();
+            _systems.ProcessInjects();
+            _systems.Init();
         }
 
         private void Update()
         {
-            _leoSystems.Run();
+            _systems.Run();
+        }
+
+        private void OnDestroy()
+        {
+            _systems.Destroy();
+            _systems = null;
+            _world.Destroy();
+            _world = null;
         }
     }
 }

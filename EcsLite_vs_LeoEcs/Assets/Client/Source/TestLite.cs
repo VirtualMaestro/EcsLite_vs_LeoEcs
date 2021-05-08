@@ -7,41 +7,46 @@ namespace Client.Source
 {
     public class TestLite : MonoBehaviour
     {
-        [SerializeField]
-        private int numCachedEntities;
-
-        private EcsSystems _liteSystems;
-        private EcsWorld _liteWorld;
+        private EcsSystems _systems;
+        private EcsWorld _world;
         
-        public EcsWorld World => _liteWorld;
+        public EcsWorld World => _world;
 
         private void Awake()
         {
             var config = new EcsWorld.Config
             {
-                Entities = numCachedEntities
+                Entities = 1_000_000
             };
             
-            _liteWorld = new EcsWorld(config);
-            _liteSystems = new EcsSystems(_liteWorld);
+            _world = new EcsWorld(config);
+            _systems = new EcsSystems(_world);
 
-            _liteSystems.Add(new StartTestLiteSystem());
-            _liteSystems.Add(new AddVisualLiteSystem());
-            _liteSystems.Add(new RemoveVisualLiteSystem());
-            _liteSystems.Add(new DestroyEntityLiteSystem());
-            _liteSystems.Add(new FinishTestLiteSystem());
+            _systems.Add(new StartTestLiteSystem());
+            _systems.Add(new AddVisualLiteSystem());
+            _systems.Add(new RemoveVisualLiteSystem());
+            _systems.Add(new DestroyEntityLiteSystem());
+            _systems.Add(new FinishTestLiteSystem());
 
-            _liteSystems.DelHere<TestStartEvent>();
+            _systems.DelHere<TestStartEvent>();
         }
         
         private void Start()
         {
-            _liteSystems.Init();
+            _systems.Init();
         }
 
         private void Update()
         {
-            _liteSystems.Run();
+            _systems.Run();
+        }
+        
+        private void OnDestroy()
+        {
+            _systems.Destroy();
+            _systems = null;
+            _world.Destroy();
+            _world = null;
         }
     }
 }

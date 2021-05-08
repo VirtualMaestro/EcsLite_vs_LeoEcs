@@ -1,4 +1,6 @@
-﻿using Client.Source.Components;
+﻿using System.Diagnostics;
+using Client.Source.Components;
+using Client.Source.Monobehs;
 using Leopotam.Ecs;
 
 namespace Client.Source.Systems.Leo
@@ -7,7 +9,8 @@ namespace Client.Source.Systems.Leo
     {
         private EcsFilter<TestProgressEvent> _testProgressFilter;
         private EcsFilter<DestroyEntityComponent> _destroyEntityFilter;
-        private EcsFilter<TestBedComponent> _testBedFilter;
+        private TestBed _testBed;
+        private Stopwatch _stopwatch;
 
         public void Run()
         {
@@ -15,12 +18,8 @@ namespace Client.Source.Systems.Leo
             {
                 _testProgressFilter.GetEntity(0).Destroy();
 
-                ref var testBedComponent = ref _testBedFilter.Get1(0);
-                var stopwatch = testBedComponent.Timer;
-                stopwatch.Stop();
-
-                var testBed = testBedComponent.TestBed;
-                testBed.SetLeoResult(stopwatch.ElapsedMilliseconds);
+                _stopwatch?.Stop();
+                _testBed.EndLeoTest(_stopwatch?.ElapsedMilliseconds ?? 0);
             }
         }
     }

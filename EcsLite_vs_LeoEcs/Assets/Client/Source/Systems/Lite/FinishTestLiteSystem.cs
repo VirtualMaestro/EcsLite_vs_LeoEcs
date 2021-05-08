@@ -30,7 +30,7 @@ namespace Client.Source.Systems.Lite
                 stopwatch.Stop();
 
                 var testBed = testBedComponent.TestBed;
-                testBed.SetLiteResult(stopwatch.ElapsedMilliseconds);
+                testBed.EndLiteTest(stopwatch.ElapsedMilliseconds);
             }
         }
     }
