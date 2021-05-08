@@ -11,6 +11,16 @@ namespace Client.Source.Monobehs
 {
     public class TestBed : MonoBehaviour
     {
+        [SerializeField] 
+        private int defaultNumEntities;
+        [SerializeField] 
+        private int defaultNumFrames;
+
+        [SerializeField] 
+        private GameObject testLeoGO;
+        [SerializeField] 
+        private GameObject testLiteGO;
+        
         [SerializeField]
         private GameObject testEcsLiteBtnGO;
         [SerializeField]
@@ -40,6 +50,11 @@ namespace Client.Source.Monobehs
         private EcsWorld _liteWorld;
         private Leopotam.Ecs.EcsWorld _leoWorld;
         private int _testBedEntityId;
+
+        private bool _isLiteEnabled;
+        private bool _isLeoEnabled;
+        private TestLeo _testLeo;
+        private TestLite _testLite;
         
         private void Start()
         {
@@ -74,8 +89,16 @@ namespace Client.Source.Monobehs
 
         private void _PrepareLite()
         {
-            _liteWorld = Entry.LiteWorld;
+            _isLiteEnabled = testLiteGO.activeSelf;
             _testLiteBtn = testEcsLiteBtnGO.GetComponent<Button>();
+            _testLiteBtn.interactable = _isLiteEnabled;
+            
+            if (!_isLiteEnabled) return;
+
+            _testLite = testLiteGO.GetComponent<TestLite>(); 
+            _liteWorld = _testLite.World;
+            _testLite.enabled = false;
+            
             _testLiteBtn.onClick.AddListener(_onTestLiteClick);
             _resultLiteTxt = resultEcsLiteTxtGO.GetComponent<TextMeshProUGUI>();
             
@@ -87,8 +110,16 @@ namespace Client.Source.Monobehs
 
         private void _PrepareLeo()
         {
-            _leoWorld = Entry.LeoWorld;
+            _isLeoEnabled = testLeoGO.activeSelf;
             _testLeoBtn = testLeoEcsBtnGO.GetComponent<Button>();
+            _testLeoBtn.interactable = _isLeoEnabled;
+            
+            if (!_isLeoEnabled) return;
+
+            _testLeo = testLeoGO.GetComponent<TestLeo>(); 
+            _leoWorld = _testLeo.World;
+            _testLeo.enabled = false;
+            
             _testLeoBtn.onClick.AddListener(_onTestLeoClick);
             _resultLeoTxt = resultLeoEcsTxtGO.GetComponent<TextMeshProUGUI>();
             
@@ -110,20 +141,20 @@ namespace Client.Source.Monobehs
         public void SetLiteResult(long milliseconds)
         {
             _resultLiteTxt.text = $"MS: {milliseconds}";
-            Entry.IsLiteEnable = false;
+            _testLite.enabled = false;
             EnableUi(true);
         }
 
         public void SetLeoResult(long milliseconds)
         {
             _resultLeoTxt.text = $"MS: {milliseconds}";
-            Entry.IsLeoEnable = false;
+            _testLeo.enabled = false;
             EnableUi(true);
         }
 
         private void _onTestLiteClick()
         {
-            Entry.IsLiteEnable = true;
+            _testLite.enabled = true;
             ref var startEvent = ref _liteWorld.GetPool<TestStartEvent>().Add(_liteWorld.NewEntity());
 
             _StartTesting(ref startEvent);
@@ -131,7 +162,7 @@ namespace Client.Source.Monobehs
 
         private void _onTestLeoClick()
         {
-            Entry.IsLeoEnable = true;
+            _testLeo.enabled = true;
             ref var startEvent = ref EcsEntityExtensions.Get<TestStartEvent>(_leoWorld.NewEntity());
             
             _StartTesting(ref startEvent);
@@ -139,16 +170,16 @@ namespace Client.Source.Monobehs
 
         private void EnableUi(bool value)
         {
-            _testLiteBtn.interactable = value;
-            _testLeoBtn.interactable = value;
+            _testLiteBtn.interactable = _isLiteEnabled ? value : _isLiteEnabled;
+            _testLeoBtn.interactable = _isLeoEnabled ? value : _isLeoEnabled;
             _numEntitiesInput.interactable = value;
             _delayDestroyInput.interactable = value;
         }
 
         private void _StartTesting(ref TestStartEvent startEvent)
         {
-            startEvent.NumEntities = string.IsNullOrEmpty(_numEntitiesInput.text) ? 100000 : Math.Abs(int.Parse(_numEntitiesInput.text));
-            startEvent.DelayDestroy = string.IsNullOrEmpty(_delayDestroyInput.text) ? 10 : Math.Abs(int.Parse(_delayDestroyInput.text));
+            startEvent.NumEntities = string.IsNullOrEmpty(_numEntitiesInput.text) ? defaultNumEntities : Math.Abs(int.Parse(_numEntitiesInput.text));
+            startEvent.DelayDestroy = string.IsNullOrEmpty(_delayDestroyInput.text) ? defaultNumFrames : Math.Abs(int.Parse(_delayDestroyInput.text));
             
             EnableUi(false);
         }
