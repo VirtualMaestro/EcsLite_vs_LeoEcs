@@ -30,7 +30,7 @@ namespace Client.Source
 
         private void _InitLite()
         {
-            var config = new EcsWorld.Config()
+            var config = new EcsWorld.Config
             {
                 Entities = 1_000_000
             };
@@ -49,7 +49,7 @@ namespace Client.Source
 
         private void _InitLeo()
         {
-            var config = new EcsWorldConfig()
+            var config = new EcsWorldConfig
             {
                 WorldEntitiesCacheSize = 1_000_000
             };
