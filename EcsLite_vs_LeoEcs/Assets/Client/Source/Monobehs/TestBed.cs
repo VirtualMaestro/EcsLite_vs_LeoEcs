@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using Client.Source.Components;
-using Leopotam.EcsLite;
+using Leopotam.Ecs;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using EcsEntityExtensions = Leopotam.Ecs.EcsEntityExtensions;
 
 namespace Client.Source.Monobehs
 {
@@ -16,11 +15,6 @@ namespace Client.Source.Monobehs
         [SerializeField] 
         private int defaultNumFrames;
 
-        [SerializeField] 
-        private GameObject testLeoGO;
-        [SerializeField] 
-        private GameObject testLiteGO;
-        
         [SerializeField]
         private GameObject testEcsLiteBtnGO;
         [SerializeField]
@@ -47,12 +41,6 @@ namespace Client.Source.Monobehs
         private TMP_InputField _delayDestroyInput;
         private TextMeshProUGUI _deviceSpecTxt;
         
-        private EcsWorld _liteWorld;
-        private Leopotam.Ecs.EcsWorld _leoWorld;
-        private int _testBedEntityId;
-
-        private bool _isLiteEnabled;
-        private TestLite _testLite;
         private Stopwatch _stopwatch;
         
         private void Start()
@@ -70,8 +58,13 @@ namespace Client.Source.Monobehs
 
             _stopwatch = new Stopwatch();
 
-            _PrepareLite();
-            _PrepareLeo();
+            _testLiteBtn = testEcsLiteBtnGO.GetComponent<Button>();
+            _testLiteBtn.onClick.AddListener(_onTestLiteClick);
+            _resultLiteTxt = resultEcsLiteTxtGO.GetComponent<TextMeshProUGUI>();
+            
+            _testLeoBtn = testLeoEcsBtnGO.GetComponent<Button>();
+            _testLeoBtn.onClick.AddListener(_onTestLeoClick);
+            _resultLeoTxt = resultLeoEcsTxtGO.GetComponent<TextMeshProUGUI>();
         }
 
         private string _GetDeviceInfo()
@@ -88,34 +81,6 @@ namespace Client.Source.Monobehs
             return description;
         }
 
-        private void _PrepareLite()
-        {
-            _isLiteEnabled = testLiteGO.activeSelf;
-            _testLiteBtn = testEcsLiteBtnGO.GetComponent<Button>();
-            _testLiteBtn.interactable = _isLiteEnabled;
-            
-            if (!_isLiteEnabled) return;
-
-            _testLite = testLiteGO.GetComponent<TestLite>(); 
-            _liteWorld = _testLite.World;
-            _testLite.enabled = false;
-            
-            _testLiteBtn.onClick.AddListener(_onTestLiteClick);
-            _resultLiteTxt = resultEcsLiteTxtGO.GetComponent<TextMeshProUGUI>();
-            
-            _testBedEntityId = _liteWorld.NewEntity();
-            ref var testBed = ref _liteWorld.GetPool<TestBedComponent>().Add(_testBedEntityId);
-            testBed.TestBed = this;
-            testBed.Timer = _stopwatch;
-        }
-
-        private void _PrepareLeo()
-        {
-            _testLeoBtn = testLeoEcsBtnGO.GetComponent<Button>();
-            _testLeoBtn.onClick.AddListener(_onTestLeoClick);
-            _resultLeoTxt = resultLeoEcsTxtGO.GetComponent<TextMeshProUGUI>();
-        }
-
         public void WriteLiteLog(string log)
         {
             _resultLiteTxt.text = log;
@@ -128,17 +93,19 @@ namespace Client.Source.Monobehs
 
         public void EndLiteTest(long timeResult)
         {
+            Destroy(gameObject.GetComponent<TestLite>());
+            
             _resultLiteTxt.text = $"MS: {timeResult}";
-            _testLite.enabled = false;
             EnableUi(true);
         }
 
         private void _onTestLiteClick()
         {
-            _testLite.enabled = true;
-            ref var startEvent = ref _liteWorld.GetPool<TestStartEvent>().Add(_liteWorld.NewEntity());
-
-            _StartTesting(ref startEvent);
+            var testLite = gameObject.AddComponent<TestLite>();
+            testLite.InjectTestBed(this);
+            testLite.InjectStopwatch(_stopwatch);
+            
+            _StartTesting(ref testLite.World.GetPool<TestStartEvent>().Add(testLite.World.NewEntity()));
         }
 
         private void _onTestLeoClick()
@@ -146,23 +113,21 @@ namespace Client.Source.Monobehs
             var testLeo = gameObject.AddComponent<TestLeo>();
             testLeo.Inject(this);
             testLeo.Inject(_stopwatch);
-            _leoWorld = testLeo.World;
             
-            _StartTesting(ref EcsEntityExtensions.Get<TestStartEvent>(_leoWorld.NewEntity()));
+            _StartTesting(ref EcsEntityExtensions.Get<TestStartEvent>(testLeo.World.NewEntity()));
         }
         
         public void EndLeoTest(long timeResult)
         {
             Destroy(gameObject.GetComponent<TestLeo>());
             
-            _leoWorld = null;
             _resultLeoTxt.text = $"MS: {timeResult}";
             EnableUi(true);
         }
 
         private void EnableUi(bool value)
         {
-            _testLiteBtn.interactable = _isLiteEnabled ? value : _isLiteEnabled;
+            _testLiteBtn.interactable = value;
             _testLeoBtn.interactable = value;
             _numEntitiesInput.interactable = value;
             _delayDestroyInput.interactable = value;

@@ -1,4 +1,6 @@
-﻿using Client.Source.Components;
+﻿using System.Diagnostics;
+using Client.Source.Components;
+using Client.Source.Monobehs;
 using Client.Source.Systems.Lite;
 using Leopotam.EcsLite;
 using UnityEngine;
@@ -11,6 +13,9 @@ namespace Client.Source
         private EcsWorld _world;
         
         public EcsWorld World => _world;
+
+        private TestBed _testBed;
+        private Stopwatch _stopwatch;
 
         private void Awake()
         {
@@ -30,10 +35,28 @@ namespace Client.Source
 
             _systems.DelHere<TestStartEvent>();
         }
+
+        public void InjectTestBed(TestBed testBed)
+        {
+            _testBed = testBed;
+        }
+        
+        public void InjectStopwatch(Stopwatch stopwatch)
+        {
+            _stopwatch = stopwatch;
+        }
+
+        private void _InitTestBedComponent()
+        {
+            ref var testBedComponent = ref _world.GetPool<TestBedComponent>().Add(_world.NewEntity());
+            testBedComponent.TestBed = _testBed;
+            testBedComponent.Timer = _stopwatch;
+        }
         
         private void Start()
         {
             _systems.Init();
+            _InitTestBedComponent();
         }
 
         private void Update()
@@ -47,6 +70,8 @@ namespace Client.Source
             _systems = null;
             _world.Destroy();
             _world = null;
+            _testBed = null;
+            _stopwatch = null;
         }
     }
 }

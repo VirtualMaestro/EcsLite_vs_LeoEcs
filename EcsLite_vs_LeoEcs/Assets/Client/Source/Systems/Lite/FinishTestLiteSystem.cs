@@ -27,10 +27,9 @@ namespace Client.Source.Systems.Lite
 
                 ref var testBedComponent = ref _testBedPool.Get(_testBedFilter.First());
                 var stopwatch = testBedComponent.Timer;
-                stopwatch.Stop();
+                stopwatch?.Stop();
 
-                var testBed = testBedComponent.TestBed;
-                testBed.EndLiteTest(stopwatch.ElapsedMilliseconds);
+                testBedComponent.TestBed.EndLiteTest(stopwatch?.ElapsedMilliseconds ?? 0);
             }
         }
     }
