@@ -11,7 +11,9 @@ namespace Client.Source.Monobehs
     public class TestBed : MonoBehaviour
     {
         [SerializeField] 
-        private bool prewarm;
+        private bool withStopwatch = true;
+        [SerializeField] 
+        private bool withPrewarm = true;
         [SerializeField] 
         private int defaultNumEntities;
         [SerializeField] 
@@ -58,7 +60,8 @@ namespace Client.Source.Monobehs
             _deviceSpecTxt = deviceSpecGO.GetComponent<TextMeshProUGUI>();
             _deviceSpecTxt.text = _GetDeviceInfo();
 
-            _stopwatch = new Stopwatch();
+            if (withStopwatch)
+                _stopwatch = new Stopwatch();
 
             _testLiteBtn = testEcsLiteBtnGO.GetComponent<Button>();
             _testLiteBtn.onClick.AddListener(_onTestLiteClick);
@@ -108,7 +111,7 @@ namespace Client.Source.Monobehs
             testLite.InjectStopwatch(_stopwatch);
 
             var entityId = testLite.World.NewEntity();
-            if (prewarm) testLite.World.GetPool<PrewarmComponent>().Add(entityId);
+            if (withPrewarm) testLite.World.GetPool<PrewarmComponent>().Add(entityId);
             _StartTesting(ref testLite.World.GetPool<TestStartEvent>().Add(entityId));
         }
 
@@ -119,7 +122,7 @@ namespace Client.Source.Monobehs
             testLeo.Inject(_stopwatch);
 
             var entity = testLeo.World.NewEntity();
-            if (prewarm) entity.Get<PrewarmComponent>();
+            if (withPrewarm) entity.Get<PrewarmComponent>();
             _StartTesting(ref entity.Get<TestStartEvent>());
         }
         
