@@ -29,9 +29,6 @@ namespace Client.Source.Systems.Lite
 
                 if (destroyEntityComponent.Frames > 0) continue;
 
-                if (_viewPool.Has(entityId))
-                    _viewPool.Del(entityId);
-
                 _world.DelEntity(entityId);
             }
         }

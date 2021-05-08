@@ -20,9 +20,6 @@ namespace Client.Source.Systems.Leo
 
                 if (destroyEntityComponent.Frames > 0) continue;
 
-                if (entity.Has<VisualComponent>())
-                    entity.Del<VisualComponent>();
-
                 entity.Destroy();
             }
         }

@@ -25,8 +25,8 @@ namespace Client.Source.Systems.Lite
 
             foreach (var entityId in _removeVisualFilter)
             {
-                _visualPool.Del(entityId);
                 _isNewPool.Add(entityId);
+                _visualPool.Del(entityId);
             }
         }
     }

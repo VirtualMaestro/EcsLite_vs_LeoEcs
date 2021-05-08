@@ -1,8 +1,10 @@
 ﻿using Client.Source.Components;
 using Client.Source.Systems.Leo;
 using Client.Source.Systems.Lite;
-using Leopotam.EcsLite;
+using Leopotam.Ecs;
 using UnityEngine;
+using EcsSystems = Leopotam.EcsLite.EcsSystems;
+using EcsWorld = Leopotam.EcsLite.EcsWorld;
 
 namespace Client.Source
 {
@@ -28,7 +30,12 @@ namespace Client.Source
 
         private void _InitLite()
         {
-            _liteWorld = new EcsWorld();
+            var config = new EcsWorld.Config()
+            {
+                Entities = 1_000_000
+            };
+            
+            _liteWorld = new EcsWorld(config);
             _liteSystems = new EcsSystems(_liteWorld);
 
             _liteSystems.Add(new StartTestLiteSystem());
@@ -42,7 +49,12 @@ namespace Client.Source
 
         private void _InitLeo()
         {
-            _leoWorld = new Leopotam.Ecs.EcsWorld();
+            var config = new EcsWorldConfig()
+            {
+                WorldEntitiesCacheSize = 1_000_000
+            };
+            
+            _leoWorld = new Leopotam.Ecs.EcsWorld(config);
             _leoSystems = new Leopotam.Ecs.EcsSystems(_leoWorld);
             _leoSystems.Add(new StartTestLeoSystem());
             _leoSystems.Add(new AddVisualLeoSystem());
