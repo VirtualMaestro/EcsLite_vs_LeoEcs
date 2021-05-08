@@ -3,7 +3,7 @@ using Client.Source.Systems.Leo;
 using Leopotam.Ecs;
 using UnityEngine;
 
-namespace Client.Source
+namespace Client.Source.Monobehs
 {
     public class TestLeo : MonoBehaviour
     {
@@ -27,7 +27,11 @@ namespace Client.Source
             _systems.Add(new DestroyEntityLeoSystem());
             _systems.Add(new FinishTestLeoSystem());
 
-            _systems.OneFrame<TestStartEvent>();
+            _systems.Add(new RemoveTestStartEventLeoSystem());
+            
+            _systems.Add(new PrewarmFinishLeoSystem());
+
+            _systems.OneFrame<PrewarmComponent>();
         }
 
         public void Inject(object obj)

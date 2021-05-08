@@ -2578,6 +2578,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6453041efae4431eaff32c0fdac79eac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prewarm: 1
   defaultNumEntities: 10000
   defaultNumFrames: 100
   testEcsLiteBtnGO: {fileID: 1365825344}

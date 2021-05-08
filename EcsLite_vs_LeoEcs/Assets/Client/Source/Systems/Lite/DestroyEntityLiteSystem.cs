@@ -7,15 +7,13 @@ namespace Client.Source.Systems.Lite
     {
         private EcsFilter _destroyEntityFilter;
         private EcsPool<DestroyEntityComponent> _destroyPool;
-        private EcsPool<VisualComponent> _viewPool;
         private EcsWorld _world;
 
         public void Init(EcsSystems systems)
         {
             _world = systems.GetWorld();
             _destroyPool = _world.GetPool<DestroyEntityComponent>();
-            _viewPool = _world.GetPool<VisualComponent>();
-            _destroyEntityFilter = _world.Filter<DestroyEntityComponent>().End();
+            _destroyEntityFilter = _world.Filter<DestroyEntityComponent>().Exc<PrewarmComponent>().End();
         }
 
         public void Run(EcsSystems systems)

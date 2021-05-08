@@ -11,6 +11,8 @@ namespace Client.Source.Monobehs
     public class TestBed : MonoBehaviour
     {
         [SerializeField] 
+        private bool prewarm;
+        [SerializeField] 
         private int defaultNumEntities;
         [SerializeField] 
         private int defaultNumFrames;
@@ -104,8 +106,10 @@ namespace Client.Source.Monobehs
             var testLite = gameObject.AddComponent<TestLite>();
             testLite.InjectTestBed(this);
             testLite.InjectStopwatch(_stopwatch);
-            
-            _StartTesting(ref testLite.World.GetPool<TestStartEvent>().Add(testLite.World.NewEntity()));
+
+            var entityId = testLite.World.NewEntity();
+            if (prewarm) testLite.World.GetPool<PrewarmComponent>().Add(entityId);
+            _StartTesting(ref testLite.World.GetPool<TestStartEvent>().Add(entityId));
         }
 
         private void _onTestLeoClick()
@@ -113,8 +117,10 @@ namespace Client.Source.Monobehs
             var testLeo = gameObject.AddComponent<TestLeo>();
             testLeo.Inject(this);
             testLeo.Inject(_stopwatch);
-            
-            _StartTesting(ref EcsEntityExtensions.Get<TestStartEvent>(testLeo.World.NewEntity()));
+
+            var entity = testLeo.World.NewEntity();
+            if (prewarm) entity.Get<PrewarmComponent>();
+            _StartTesting(ref entity.Get<TestStartEvent>());
         }
         
         public void EndLeoTest(long timeResult)

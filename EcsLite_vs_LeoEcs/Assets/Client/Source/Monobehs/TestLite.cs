@@ -1,11 +1,10 @@
 ﻿using System.Diagnostics;
 using Client.Source.Components;
-using Client.Source.Monobehs;
 using Client.Source.Systems.Lite;
 using Leopotam.EcsLite;
 using UnityEngine;
 
-namespace Client.Source
+namespace Client.Source.Monobehs
 {
     public class TestLite : MonoBehaviour
     {
@@ -33,7 +32,11 @@ namespace Client.Source
             _systems.Add(new DestroyEntityLiteSystem());
             _systems.Add(new FinishTestLiteSystem());
 
-            _systems.DelHere<TestStartEvent>();
+            _systems.Add(new RemoveStartEventLiteSystem());
+            
+            _systems.Add(new PrewarmFinishLiteSystem());
+            
+            _systems.DelHere<PrewarmComponent>();
         }
 
         public void InjectTestBed(TestBed testBed)

@@ -5,12 +5,12 @@ namespace Client.Source.Systems.Leo
 {
     public class DestroyEntityLeoSystem : IEcsRunSystem
     {
-        private EcsWorld _world;
         private EcsFilter<DestroyEntityComponent> _destroyEntityFilter;
+        private EcsFilter<PrewarmComponent> _prewarmFilter;
 
         public void Run()
         {
-            if (_destroyEntityFilter.IsEmpty()) return;
+            if (_destroyEntityFilter.IsEmpty() || !_prewarmFilter.IsEmpty()) return;
 
             foreach (var entityId in _destroyEntityFilter)
             {
